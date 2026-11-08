@@ -1,0 +1,16 @@
+post_install() {
+    cat <<'MSG'
+==> llama.cpp (Dory) installed.
+    Let your user manage models in /opt/models:
+        sudo gpasswd -a <your-user> llm      (log out/in afterwards)
+    Start listening on 127.0.0.1:8080 (the server starts on first request):
+        sudo systemctl enable --now llama.cpp.socket
+    Settings: /etc/conf.d/llama.cpp and /etc/llama.cpp/models.ini
+MSG
+}
+
+post_upgrade() {
+    if systemctl is-active --quiet llama.cpp.service; then
+        echo "==> Run 'sudo systemctl restart llama.cpp' to use the new build."
+    fi
+}

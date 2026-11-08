@@ -1,0 +1,15 @@
+[Unit]
+Description=llama.cpp socket-activation proxy
+Requires=llama.cpp.service llama.cpp.socket
+After=llama.cpp.service llama.cpp.socket
+
+[Service]
+# Exits after 15 minutes without connections; llama.cpp.service then stops
+# too (StopWhenUnneeded=yes) and the socket waits for the next request.
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd --exit-idle-time=15min 127.0.0.1:18080
+DynamicUser=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes

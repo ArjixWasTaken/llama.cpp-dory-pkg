@@ -1,0 +1,4 @@
+# Shared model store: group llm can add/remove models without sudo.
+# setgid keeps new files in group llm; the default ACL keeps them group-writable.
+d  /opt/models 2775 root llm -
+a+ /opt/models -    -    -   - d:g::rwx,d:m::rwx,g::rwx,m::rwx

@@ -1,0 +1,39 @@
+[Unit]
+Description=llama.cpp server (router mode, models in /opt/models)
+Documentation=https://github.com/ggml-org/llama.cpp/tree/master/tools/server
+After=network.target local-fs.target
+# Started on demand by llama.cpp-proxy.service (via llama.cpp.socket) and
+# stopped again once the proxy exits after being idle.
+StopWhenUnneeded=yes
+
+[Service]
+Type=exec
+User=llama
+Group=llama
+EnvironmentFile=/etc/conf.d/llama.cpp
+Environment=HOME=/var/lib/llama.cpp
+StateDirectory=llama.cpp
+WorkingDirectory=/var/lib/llama.cpp
+ExecStart=/usr/bin/llama-server \
+    --host 127.0.0.1 --port 18080 \
+    --models-dir /opt/models \
+    --models-preset /etc/llama.cpp/models.ini \
+    $LLAMA_ARGS
+# Block the proxy until the router actually accepts connections.
+ExecStartPost=/usr/lib/llama.cpp/wait-ready http://127.0.0.1:18080/health
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutStartSec=90
+Restart=on-failure
+RestartSec=2
+
+# Hardening. GPU access comes from the render/video groups (see sysusers.d).
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/opt/models
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes

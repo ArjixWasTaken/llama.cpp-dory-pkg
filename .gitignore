@@ -1,0 +1,6 @@
+src/
+pkg/
+build/
+llama.cpp/
+*.pkg.tar.zst
+*.log

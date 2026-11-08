@@ -1,0 +1,11 @@
+#!/bin/sh
+# Wait until llama-server answers on its health endpoint (max ~60 s).
+url=${1:-http://127.0.0.1:18080/health}
+i=0
+while [ "$i" -lt 240 ]; do
+    curl -sf -o /dev/null "$url" && exit 0
+    sleep 0.25
+    i=$((i + 1))
+done
+echo "llama-server did not become ready at $url" >&2
+exit 1

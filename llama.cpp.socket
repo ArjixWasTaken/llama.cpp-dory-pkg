@@ -1,0 +1,9 @@
+[Unit]
+Description=llama.cpp server socket (starts the server on first request)
+
+[Socket]
+ListenStream=127.0.0.1:8080
+Service=llama.cpp-proxy.service
+
+[Install]
+WantedBy=sockets.target

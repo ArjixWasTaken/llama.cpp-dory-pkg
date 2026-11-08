@@ -1,0 +1,5 @@
+g llm -
+u llama - "llama.cpp server" /var/lib/llama.cpp
+m llama llm
+m llama render
+m llama video
